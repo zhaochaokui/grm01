@@ -1,8 +1,8 @@
 {
-  "digest": "sha256:699c8f1531904839bcbb8b230dd89b049a09f555891a66e92d3711d26fd104f8",
-  "bundleRev": "20260702g",
+  "digest": "sha256:3f6c00c78c3de71867ec432b6a19a560dfa1baf0d536e228351a6814efd98b5e",
+  "bundleRev": "20260702h",
   "projectScriptCount": 67,
   "bundledScriptCount": 68,
-  "verifiedAt": "2026-07-05T10:28:39.872Z",
+  "verifiedAt": "2026-07-05T11:03:44.032Z",
   "buildDir": "web-mobile"
 }
