@@ -1,0 +1,134 @@
+html {
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  -ms-touch-action: none;
+  touch-action: none;
+}
+
+body, canvas, div {
+  display: block;
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -khtml-user-select: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  height: 100dvh;
+  padding: 0;
+  border: 0;
+  margin: 0;
+  overflow: hidden;
+  cursor: default;
+  color: #888;
+  background-color: #333;
+  font-family: Helvetica, Verdana, Arial, sans-serif;
+}
+
+canvas {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+#GameDiv,
+#Cocos3dGameContainer,
+#GameCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --safe-top: env(safe-area-inset-top);
+  --safe-right: env(safe-area-inset-right);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+}
+
+.portrait-hint {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(24px + var(--safe-top)) calc(24px + var(--safe-right))
+    calc(24px + var(--safe-bottom)) calc(24px + var(--safe-left));
+  box-sizing: border-box;
+  background: #1a1a2e;
+  color: #fff;
+  text-align: center;
+  touch-action: none;
+}
+
+.portrait-hint[hidden] {
+  display: none !important;
+}
+
+.portrait-hint__inner {
+  max-width: 320px;
+}
+
+.portrait-hint__icon {
+  width: 72px;
+  height: 120px;
+  margin: 0 auto 28px;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  position: relative;
+  animation: portrait-hint-rotate 2.2s ease-in-out infinite;
+}
+
+.portrait-hint__icon::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 24px;
+  height: 4px;
+  margin-left: -12px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+.portrait-hint__title {
+  margin: 0 0 12px;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.portrait-hint__subtitle {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+@keyframes portrait-hint-rotate {
+  0%, 18% {
+    transform: rotate(0deg);
+  }
+  45%, 63% {
+    transform: rotate(90deg);
+  }
+  100% {
+    transform: rotate(90deg);
+  }
+}
