@@ -211,6 +211,16 @@
       global.visualViewport.addEventListener('scroll', syncGameViewportShell);
     }
     document.addEventListener('WeixinJSBridgeReady', scheduleOrientationRetries, false);
+    document.addEventListener(
+      'touchmove',
+      function (ev) {
+        var t = ev.target;
+        if (t === document.body || t === document.documentElement) {
+          ev.preventDefault();
+        }
+      },
+      { passive: false },
+    );
   }
 
   /** iPhone 横屏刘海 / Home 条：读取 CSS env(safe-area-inset-*) */
