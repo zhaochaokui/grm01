@@ -223,20 +223,64 @@
     );
   }
 
+  /** 用 padding + env() 探测真实安全区（CSS 变量里的 env 在 JS 中常解析为 0） */
+  function ensureSafeAreaProbe() {
+    var probe = document.getElementById('__gameSafeAreaProbe');
+    if (probe) {
+      return probe;
+    }
+    probe = document.createElement('div');
+    probe.id = '__gameSafeAreaProbe';
+    probe.style.cssText = [
+      'position:fixed',
+      'top:0',
+      'left:0',
+      'width:0',
+      'height:0',
+      'visibility:hidden',
+      'pointer-events:none',
+      'padding-top:env(safe-area-inset-top)',
+      'padding-right:env(safe-area-inset-right)',
+      'padding-bottom:env(safe-area-inset-bottom)',
+      'padding-left:env(safe-area-inset-left)',
+    ].join(';');
+    (document.body || document.documentElement).appendChild(probe);
+    return probe;
+  }
+
+  function readProbeInsets() {
+    var top = 0;
+    var right = 0;
+    var bottom = 0;
+    var left = 0;
+    try {
+      var style = global.getComputedStyle(ensureSafeAreaProbe());
+      top = parseFloat(style.paddingTop) || 0;
+      right = parseFloat(style.paddingRight) || 0;
+      bottom = parseFloat(style.paddingBottom) || 0;
+      left = parseFloat(style.paddingLeft) || 0;
+    } catch (e) {
+      /* ignore */
+    }
+    return { top: top, right: right, bottom: bottom, left: left };
+  }
+
+  function isIOSDevice() {
+    var ua = navigator.userAgent || '';
+    if (/iPhone|iPod|iPad/i.test(ua)) {
+      return true;
+    }
+    return navigator.maxTouchPoints > 1 && /Macintosh/i.test(ua);
+  }
+
   /** iPhone 横屏刘海 / Home 条：读取 CSS env(safe-area-inset-*) */
   function resolveSafeAreaInsets() {
     var doc = document.documentElement;
-    var style = global.getComputedStyle(doc);
-    function readCssVar(name) {
-      var raw = style.getPropertyValue(name).trim();
-      var v = parseFloat(raw);
-      return isFinite(v) && v > 0 ? v : 0;
-    }
-
-    var top = readCssVar('--safe-top');
-    var right = readCssVar('--safe-right');
-    var bottom = readCssVar('--safe-bottom');
-    var left = readCssVar('--safe-left');
+    var probeInsets = readProbeInsets();
+    var top = probeInsets.top;
+    var right = probeInsets.right;
+    var bottom = probeInsets.bottom;
+    var left = probeInsets.left;
 
     var vv = global.visualViewport;
     if (vv) {
@@ -252,6 +296,21 @@
       if (bottom <= 0 && vv.height > 0 && doc.clientHeight > vv.height + vv.offsetTop) {
         bottom = doc.clientHeight - vv.height - vv.offsetTop;
       }
+    }
+
+    // iOS 横屏：探测仍为 0 时按刘海 / 灵动岛方向补最小边距
+    if (isIOSDevice() && !isPortraitOrientation()) {
+      var angle = readOrientationAngle();
+      var notchInset = 59;
+      var homeInset = 21;
+      if (angle === 90) {
+        left = Math.max(left, notchInset);
+        right = Math.max(right, homeInset);
+      } else if (angle === -90 || angle === 270) {
+        right = Math.max(right, notchInset);
+        left = Math.max(left, homeInset);
+      }
+      bottom = Math.max(bottom, homeInset);
     }
 
     return {
